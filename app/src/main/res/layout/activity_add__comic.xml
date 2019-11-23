@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Add_Comic">
+
+
+    <LinearLayout
+        android:id="@+id/linear1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="20sp"
+        android:layout_marginTop="20sp"
+        >
+
+    <ImageView
+        android:id="@+id/comic_photo"
+        android:layout_width="200sp"
+        android:layout_height="200sp"
+
+
+        android:src="@drawable/ic_comic_photo"
+
+        />
+
+
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_marginTop="20sp"
+            android:maxLines="2"
+            android:id="@+id/Comic_keyword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40sp"
+            android:hint="Comic keyword"
+
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_marginTop="20sp"
+                android:maxLines="2"
+                android:id="@+id/Comic_memelord"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40sp"
+                android:hint="Meme Lord name"
+
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/ic_save_comic"
+        android:layout_margin="16dp"
+        tools:ignore="MissingConstraints" />
+
+
+
+</FrameLayout>
