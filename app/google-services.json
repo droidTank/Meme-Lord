@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "999672647922",
+    "firebase_url": "https://meme-lord-36ca5.firebaseio.com",
+    "project_id": "meme-lord-36ca5",
+    "storage_bucket": "meme-lord-36ca5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:999672647922:android:153f6669a21be22641006b",
+        "android_client_info": {
+          "package_name": "com.example.memelord"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "999672647922-2v44gh9ujo21865mbo3qehmm3gmch312.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.memelord",
+            "certificate_hash": "985477431753116c5940f0e4fa0035c52f70247f"
+          }
+        },
+        {
+          "client_id": "999672647922-o0h1b2t0eud1nmpaktl5g7t63qpm5ogs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJasYFb1K8ibUylI3xyujoLILixN1Gb6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "999672647922-o0h1b2t0eud1nmpaktl5g7t63qpm5ogs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
