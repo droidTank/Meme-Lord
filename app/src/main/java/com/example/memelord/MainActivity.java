@@ -157,17 +157,29 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
 
-                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
 
                     AddComicModel addComicModel = snapshot.getValue(AddComicModel.class);
 
 
+                    assert addComicModel != null;
+
+                    if (!addComicModel.getComicmemelord().equals("")) {
+
+
+                      comics.add(addComicModel);
 
 
 
-                        comics.add(addComicModel);
+                       }else{
+
+                        /*DatabaseReference referenceee= FirebaseDatabase.getInstance()
+                                .getReference("Comics").child(addComicModel.getComicid());
+
+                        referenceee.removeValue();*/
 
 
+                    }
 
 
                 }
@@ -215,13 +227,25 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                     AddComicModel addComicModel = snapshot.getValue(AddComicModel.class);
 
+                    assert addComicModel != null;
+                    if(addComicModel.getComicdescription().size()>0) {
 
-                    if(addComicModel.getComickeyword().toLowerCase().contains(finalNewText)){
+                        for (int i = 0; i < addComicModel.getComicdescription().size(); i++) {
+
+                            if (addComicModel.getComicdescription().get(i).getDescription().toLowerCase().contains(finalNewText)
+
+                                    && !addComicModel.getComicmemelord().equals("") &&
+                                    !addComicModel.getComicphoto().equals("")
+                            ) {
 
 
-                        comics.add(addComicModel);
+                                comics.add(addComicModel);
 
+                                break;
 
+                            }
+
+                        }
                     }
 
                 }
@@ -229,6 +253,47 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                 comicAdapter = new ComicAdapter(MainActivity.this,comics);
                 recyclerView.setAdapter(comicAdapter);
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+
+
+        DatabaseReference referencee= FirebaseDatabase.getInstance().getReference("Comics");
+
+        referencee.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()) {
+
+                    AddComicModel addComicModel = snapshot.getValue(AddComicModel.class);
+
+
+                    assert addComicModel != null;
+
+                    if (addComicModel.getComicmemelord().equals("") || addComicModel.getComicphoto().equals("")) {
+
+
+                        DatabaseReference referenceee= FirebaseDatabase.getInstance()
+                                .getReference("Comics").child(addComicModel.getComicid());
+
+                        referenceee.removeValue();
+
+
+                    }
+                }
+
 
 
             }

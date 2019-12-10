@@ -1,20 +1,22 @@
 package com.example.memelord.Model;
 
+import java.util.List;
+
 public class AddComicModel {
 
     private String comicid;
     private String comicmemelord;
-    private String comickeyword;
+    private List<AddDescriptionModel> comicdescription;
     private String comicphoto;
     private String comictime;
 
     public AddComicModel() {
     }
 
-    public AddComicModel(String comicid, String comicmemelord, String comickeyword, String comicphoto, String comictime) {
+    public AddComicModel(String comicid, String comicmemelord, List<AddDescriptionModel> comicdescription, String comicphoto, String comictime) {
         this.comicid = comicid;
         this.comicmemelord = comicmemelord;
-        this.comickeyword = comickeyword;
+        this.comicdescription = comicdescription;
         this.comicphoto = comicphoto;
         this.comictime = comictime;
     }
@@ -43,12 +45,12 @@ public class AddComicModel {
         this.comicmemelord = comicmemelord;
     }
 
-    public String getComickeyword() {
-        return comickeyword;
+    public List<AddDescriptionModel> getComicdescription() {
+        return comicdescription;
     }
 
-    public void setComickeyword(String comickeyword) {
-        this.comickeyword = comickeyword;
+    public void setComicdescription(List<AddDescriptionModel> comicdescription) {
+        this.comicdescription = comicdescription;
     }
 
     public String getComicphoto() {

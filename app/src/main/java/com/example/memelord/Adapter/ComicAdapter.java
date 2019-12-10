@@ -11,11 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.memelord.Add_Comic;
 import com.example.memelord.Model.AddComicModel;
+import com.example.memelord.Model.AddDescriptionModel;
 import com.example.memelord.R;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.Viewholder> {
@@ -56,6 +60,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.Viewholder> 
             public void onClick(View v) {
 
 
+
             }
         });
 
@@ -65,7 +70,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.Viewholder> 
 
         holder.comicmemelord.setText(addComicModel.getComicmemelord());
 
-        holder.comickeyword.setText(addComicModel.getComickeyword());
+       // holder.comickeyword.setText(addComicModel.getComicdescription());
 
         holder.comictime.setText(addComicModel.getComictime());
 
@@ -80,12 +85,12 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.Viewholder> 
 
 
 
-    public class Viewholder extends RecyclerView.ViewHolder {
+    public static class Viewholder extends RecyclerView.ViewHolder {
 
 
 
         protected ImageView comicphoto;
-        protected TextView comickeyword;
+
         protected TextView comicmemelord;
 
         protected TextView comictime;
@@ -97,7 +102,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.Viewholder> 
 
 
             comicphoto = (ImageView) itemView.findViewById(R.id.comicphoto);
-            comickeyword = (TextView) itemView.findViewById(R.id.comickeyword);
+
             comicmemelord = (TextView) itemView.findViewById(R.id.comicmemelord);
 
             comictime = (TextView) itemView.findViewById(R.id.comictime);

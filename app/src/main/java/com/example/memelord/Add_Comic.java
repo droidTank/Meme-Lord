@@ -18,9 +18,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.memelord.Adapter.ComicAdapter;
+import com.example.memelord.Adapter.DescriptionAdapter;
 import com.example.memelord.Model.AddComicModel;
+import com.example.memelord.Model.AddDescriptionModel;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,16 +43,24 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 public class Add_Comic extends AppCompatActivity {
 
+    public static String comicid;
     protected ImageView comicphoto;
-    protected EditText ComicKeyword;
+    protected EditText Comicdescription;
     protected EditText ComicMemelord;
     protected FloatingActionButton addGroup;
+    protected FloatingActionButton adddescription;
+
+    public RecyclerView recyclerView;
+
+    public DescriptionAdapter descriptionAdapter;
 
     protected ImageView comicPhotoImageView;
 
@@ -56,7 +69,13 @@ public class Add_Comic extends AppCompatActivity {
     private Uri imageuri;
     private StorageTask<UploadTask.TaskSnapshot> uploadtask;
 
-    String comicid;
+    List <String> descriptionList;
+
+    public static List <AddDescriptionModel>  descriptionListt;
+
+    public static List <AddDescriptionModel>  descriptionListtt;
+
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -73,23 +92,80 @@ public class Add_Comic extends AppCompatActivity {
 
         final String currentDateandTime = new SimpleDateFormat("EEE  MMM d, yyyy h:mm a").format(new Date());
 
+        descriptionList = new ArrayList<>();
+
+        descriptionListt = new ArrayList<>();
+
+        descriptionListtt = new ArrayList<>();
+
+
+        AddDescriptionModel addDescriptionModelll=new AddDescriptionModel("");
+
+        descriptionListt.add(addDescriptionModelll);
+
         AddComicModel addComicModel = new AddComicModel(comicid
-                ,"","","",currentDateandTime);
+                ,"",descriptionListt,"",currentDateandTime);
         FirebaseDatabase.getInstance().getReference("Comics")
                 .child(comicid)
                 .setValue(addComicModel);
 
         comicPhotoImageView = (ImageView) findViewById(R.id.comicPhotoImageView);
 
-        ComicKeyword = (EditText) findViewById(R.id.Comic_keyword);
+        Comicdescription = (EditText) findViewById(R.id.Comic_description);
 
         ComicMemelord = (EditText) findViewById(R.id.Comic_memelord);
 
         addGroup = (FloatingActionButton) findViewById(R.id.add_group);
 
+        adddescription=(FloatingActionButton) findViewById(R.id.add_description);
+
         comicphoto = findViewById(R.id.comic_photo);
 
 
+        adddescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String ComicDecriptionstr= Comicdescription.getText().toString();
+
+
+                if(ComicDecriptionstr.isEmpty()){
+
+                    Comicdescription.setError("required");
+
+
+
+                }else {
+
+                    Comicdescription.setText("");
+
+                    DatabaseReference reference=FirebaseDatabase.getInstance()
+                            .getReference("Comics").child(comicid);
+
+                    AddDescriptionModel addDescriptionModelll=new AddDescriptionModel(ComicDecriptionstr);
+
+                    if(descriptionListt.get(0).equals("")){
+                        descriptionListt.clear();
+                    }
+
+                    descriptionListt.add(addDescriptionModelll);
+
+                    HashMap<String,Object> map = new HashMap<>();
+
+                    map.put("comicdescription",descriptionListt);
+
+                    reference.updateChildren(map);
+
+                    recyclerView = findViewById(R.id.recyclerviewdescription);
+                    recyclerView.setHasFixedSize(true);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(Add_Comic.this));
+
+                    readdescription();
+
+                }
+
+            }
+        });
 
         storageReference= FirebaseStorage.getInstance().getReference("uploads");
 
@@ -109,12 +185,12 @@ public class Add_Comic extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String ComicKeywordstr= ComicKeyword.getText().toString();
+                String ComicDecriptionstr= Comicdescription.getText().toString();
                 String ComicMemeLordstr= ComicMemelord.getText().toString();
 
-                if(ComicKeywordstr.isEmpty()){
+                if(descriptionListt.size()==0){
 
-                    ComicKeyword.setError("required");
+                    Comicdescription.setError("required");
 
                 }
                 else if(ComicMemeLordstr.isEmpty()){
@@ -139,13 +215,13 @@ public class Add_Comic extends AppCompatActivity {
                     DatabaseReference reference=FirebaseDatabase.getInstance()
                             .getReference("Comics").child(comicid);
 
-
+                    descriptionList.add(ComicDecriptionstr);
 
                     HashMap<String,Object> map = new HashMap<>();
 
                     map.put("comicmemelord",ComicMemeLordstr);
 
-                    map.put("comickeyword",ComicKeywordstr);
+                    map.put("comicdescription",descriptionListt);
 
                     reference.updateChildren(map);
 
@@ -312,6 +388,53 @@ public class Add_Comic extends AppCompatActivity {
 
 
 
+
+
+    }
+
+
+
+    private void readdescription(){
+
+
+        DatabaseReference reference= FirebaseDatabase.getInstance().getReference("Comics");
+
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+                descriptionListtt.clear();
+
+
+
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+
+                    AddComicModel addComicModel = snapshot.getValue(AddComicModel.class);
+
+                    if(addComicModel.getComicid().equals(comicid)) {
+
+
+                            descriptionListtt.addAll(addComicModel.getComicdescription());
+
+                        break;
+                    }
+
+                }
+
+
+                descriptionAdapter = new DescriptionAdapter(Add_Comic.this,descriptionListt);
+                recyclerView.setAdapter(descriptionAdapter);
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
     }
