@@ -55,7 +55,7 @@ public class Add_Comic extends AppCompatActivity {
     protected ImageView comicphoto;
     protected EditText Comicdescription;
     protected EditText ComicMemelord;
-    protected FloatingActionButton addGroup;
+    protected FloatingActionButton addcomic;
     protected FloatingActionButton adddescription;
 
     public RecyclerView recyclerView;
@@ -109,13 +109,15 @@ public class Add_Comic extends AppCompatActivity {
                 .child(comicid)
                 .setValue(addComicModel);
 
+        descriptionListt.clear();
+
         comicPhotoImageView = (ImageView) findViewById(R.id.comicPhotoImageView);
 
         Comicdescription = (EditText) findViewById(R.id.Comic_description);
 
         ComicMemelord = (EditText) findViewById(R.id.Comic_memelord);
 
-        addGroup = (FloatingActionButton) findViewById(R.id.add_group);
+        addcomic = (FloatingActionButton) findViewById(R.id.addcomic);
 
         adddescription=(FloatingActionButton) findViewById(R.id.add_description);
 
@@ -135,7 +137,16 @@ public class Add_Comic extends AppCompatActivity {
 
 
 
-                }else {
+                }
+                else if(!isProbablyArabic(ComicDecriptionstr)){
+
+                    Comicdescription.setError("Arabic, please");
+
+
+                }
+
+
+                else {
 
                     Comicdescription.setText("");
 
@@ -144,13 +155,14 @@ public class Add_Comic extends AppCompatActivity {
 
                     AddDescriptionModel addDescriptionModelll=new AddDescriptionModel(ComicDecriptionstr);
 
-                    if(descriptionListt.get(0).equals("")){
-                        descriptionListt.clear();
-                    }
-
                     descriptionListt.add(addDescriptionModelll);
 
                     HashMap<String,Object> map = new HashMap<>();
+
+                   /* if(descriptionListt.get(0).equals("")){
+                        descriptionListt.remove(0);
+                    }*/
+
 
                     map.put("comicdescription",descriptionListt);
 
@@ -180,7 +192,7 @@ public class Add_Comic extends AppCompatActivity {
         });
 
 
-        addGroup.setOnClickListener(new View.OnClickListener() {
+        addcomic.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
@@ -188,9 +200,16 @@ public class Add_Comic extends AppCompatActivity {
                 String ComicDecriptionstr= Comicdescription.getText().toString();
                 String ComicMemeLordstr= ComicMemelord.getText().toString();
 
-                if(descriptionListt.size()==0){
+                if(descriptionListt.size()==0 && ComicDecriptionstr.isEmpty()){
 
                     Comicdescription.setError("required");
+
+                }
+
+                else if(!isProbablyArabic(ComicDecriptionstr) && !ComicDecriptionstr.isEmpty()){
+
+                    Comicdescription.setError("Arabic, please");
+
 
                 }
                 else if(ComicMemeLordstr.isEmpty()){
@@ -215,7 +234,10 @@ public class Add_Comic extends AppCompatActivity {
                     DatabaseReference reference=FirebaseDatabase.getInstance()
                             .getReference("Comics").child(comicid);
 
-                    descriptionList.add(ComicDecriptionstr);
+                    if(!ComicDecriptionstr.isEmpty()){
+                    AddDescriptionModel addDescriptionModelll=new AddDescriptionModel(ComicDecriptionstr);
+
+                    descriptionListt.add(addDescriptionModelll);}
 
                     HashMap<String,Object> map = new HashMap<>();
 
@@ -306,6 +328,8 @@ public class Add_Comic extends AppCompatActivity {
                 public void onComplete(@NonNull Task task) {
 
                     if(task.isSuccessful()) {
+
+
                         Uri downloadUri = (Uri) task.getResult();
 
                         String auri= downloadUri.toString();
@@ -329,6 +353,8 @@ public class Add_Comic extends AppCompatActivity {
 
                         storageReference= FirebaseStorage.getInstance().getReference("uploads");
 
+
+
                         DatabaseReference referencee= FirebaseDatabase.getInstance().getReference("Comics")
                                 .child(comicid);
 
@@ -340,8 +366,12 @@ public class Add_Comic extends AppCompatActivity {
                                 AddComicModel addComicModel = dataSnapshot.getValue(AddComicModel.class);
 
 
-                                Glide.with(getApplicationContext())
-                                        .load(addComicModel.getComicphoto()).into(comicPhotoImageView);
+                                assert addComicModel != null;
+
+                                assert addComicModel.getComicphoto() != null;
+
+                                    Glide.with(getApplicationContext())
+                                            .load(addComicModel.getComicphoto()).into(comicPhotoImageView);
 
 
 
@@ -415,8 +445,7 @@ public class Add_Comic extends AppCompatActivity {
 
                     if(addComicModel.getComicid().equals(comicid)) {
 
-
-                            descriptionListtt.addAll(addComicModel.getComicdescription());
+                        descriptionListtt.addAll(addComicModel.getComicdescription());
 
                         break;
                     }
@@ -494,7 +523,15 @@ public class Add_Comic extends AppCompatActivity {
 
 
 
-
+    public static boolean isProbablyArabic(String s) {
+        for (int i = 0; i < s.length();) {
+            int c = s.codePointAt(i);
+            if (c >= 0x0600 && c <= 0x06E0)
+                return true;
+            i += Character.charCount(c);
+        }
+        return false;
+    }
     
 
     

@@ -1,13 +1,22 @@
 package com.example.memelord.Adapter;
 
+import android.Manifest;
+import android.app.DownloadManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -19,6 +28,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,6 +43,10 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.Viewholder> 
     private Context context;
     private List<AddComicModel> comics;
 
+
+    String url ;
+    File file;
+    String dirPath, fileName;
 
     FirebaseUser firebaseUser;
     DatabaseReference reference;
@@ -55,10 +73,22 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.Viewholder> 
         final AddComicModel addComicModel = comics.get(position);
 
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.downloadbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+
+
+                // Initialization Of DownLoad Butto
+
+
+
+                downloadFile( addComicModel.getComicphoto());
+
+
+
+
+                //Toast.makeText(context, "ffffff", Toast.LENGTH_SHORT).show();
 
 
             }
@@ -78,6 +108,39 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.Viewholder> 
     }
 
 
+
+    public void downloadFile(String uRl) {
+
+        final File imageRoot = new File(Environment.DIRECTORY_PICTURES.concat("/MemeLord"));
+
+        if (!imageRoot.exists()) {
+
+            imageRoot.mkdirs();
+
+        }
+
+        DownloadManager mgr = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+
+        Uri downloadUri = Uri.parse(uRl);
+        DownloadManager.Request request = new DownloadManager.Request(
+                downloadUri);
+
+        String extStorageDirectory = imageRoot.toString();
+
+        request.setAllowedNetworkTypes(
+                DownloadManager.Request.NETWORK_WIFI
+                        | DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false).setTitle("MemeLord")
+                .setDescription(uRl)
+                .setDestinationInExternalPublicDir(extStorageDirectory,"MemeLord");
+
+        mgr.enqueue(request);
+
+    }
+
+
+
+
     @Override
     public int getItemCount() {
         return comics.size();
@@ -89,7 +152,7 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.Viewholder> 
 
 
 
-        protected ImageView comicphoto;
+        protected ImageView comicphoto,downloadbtn;
 
         protected TextView comicmemelord;
 
@@ -106,6 +169,9 @@ public class ComicAdapter extends RecyclerView.Adapter<ComicAdapter.Viewholder> 
             comicmemelord = (TextView) itemView.findViewById(R.id.comicmemelord);
 
             comictime = (TextView) itemView.findViewById(R.id.comictime);
+
+
+            downloadbtn = (ImageView) itemView.findViewById(R.id.downloadbtn);
 
 
         }
